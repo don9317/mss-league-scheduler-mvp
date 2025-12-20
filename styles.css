@@ -1,0 +1,6 @@
+
+body{margin:0;font-family:Arial;background:#0b1220;color:#e6eefc}
+.topbar{display:flex;gap:16px;padding:12px;background:#111a2e}
+.logo{width:40px;height:40px;border-radius:10px;background:#52d0ff;color:#000;display:grid;place-items:center;font-weight:900}
+.tabs button{margin-right:6px}
+.card{margin:16px;padding:16px;border:1px solid #223051;border-radius:12px;background:#111a2e}
