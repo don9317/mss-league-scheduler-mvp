@@ -1,217 +1,25 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>League Scheduler MVP v5</title>
-  <link rel="stylesheet" href="styles.css"/>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MSS League Scheduler MVP – v6</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header class="app-header">
-    <div class="brand">
-      <div class="logo">LS</div>
-      <div>
-        <div class="title">League Scheduler MVP</div>
-        <div class="subtitle">v5 — Gender + Grade + Skill • CSV • Courts/Availability • Exceptions • Min Games</div>
-      </div>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo">MSS</div>
+    <div>
+      <div class="title">League Scheduler MVP</div>
+      <div class="subtitle">Coach View supported • v6</div>
     </div>
-    <div class="actions">
-      <button class="btn secondary" id="btnReset">Reset</button>
-      <button class="btn" id="btnSave">Save</button>
-    </div>
-  </header>
-
-  <main class="container">
-    <nav class="tabs">
-      <button class="tab active" data-tab="teams">Teams</button>
-      <button class="tab" data-tab="settings">Settings</button>
-      <button class="tab" data-tab="schedule">Schedule</button>
-      <button class="tab" data-tab="standings">Standings</button>
-    </nav>
-
-    <!-- TEAMS -->
-    <section class="panel active" id="tab-teams">
-      <div class="grid two">
-        <div class="card">
-          <div class="card-title">Add Team</div>
-          <div class="row">
-            <label>Team Name</label>
-            <input id="teamName" placeholder="e.g., Thunder" />
-          </div>
-          <div class="row two-col">
-            <div>
-              <label>Gender</label>
-              <select id="gender">
-                <option>Boys</option>
-                <option>Girls</option>
-              </select>
-            </div>
-            <div>
-              <label>Skill</label>
-              <select id="skill">
-                <option>Open</option>
-                <option>Rec</option>
-              </select>
-            </div>
-          </div>
-
-          <div class="row">
-            <label>Grade</label>
-            <div class="grade-wrap">
-              <select id="gradePreset">
-                <option value="">Select Grade</option>
-                <option>1st</option><option>2nd</option><option>3rd</option><option>4th</option>
-                <option>5th</option><option>6th</option><option>7th</option><option>8th</option>
-                <option>9th</option><option>10th</option><option>11th</option><option>12th</option>
-              </select>
-              <span class="muted">or</span>
-              <input id="gradeCustom" placeholder="Custom (e.g., 3rd/4th, MS)" />
-            </div>
-          </div>
-
-          <div class="row">
-            <button class="btn" id="btnAddTeam">Add Team</button>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="card-title">Upload Teams (CSV)</div>
-          <div class="muted small">Format: <code>Team Name,Gender,Grade,Skill</code></div>
-          <div class="row">
-            <input type="file" id="csvFile" accept=".csv,text/csv"/>
-          </div>
-          <div class="row">
-            <button class="btn secondary" id="btnDownloadTemplate">Download CSV Template</button>
-          </div>
-          <div id="csvStatus" class="status"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Teams</div>
-          <div class="muted small">Divisions are grouped by <b>Gender + Grade + Skill</b>. No cross-division games.</div>
-          <div class="toolbar">
-            <input id="teamSearch" placeholder="Search teams..."/>
-            <button class="btn secondary" id="btnClearTeams">Clear Teams</button>
-          </div>
-          <div id="teamsList" class="list"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SETTINGS -->
-    <section class="panel" id="tab-settings">
-      <div class="grid two">
-        <div class="card">
-          <div class="card-title">Court & Time Settings</div>
-
-          <div class="row two-col">
-            <div>
-              <label>Courts Used</label>
-              <select id="courtsUsed">
-                <option value="1">1 court</option>
-                <option value="2">2 courts</option>
-                <option value="3">3 courts</option>
-                <option value="4" selected>4 courts</option>
-              </select>
-            </div>
-            <div>
-              <label>Game Length</label>
-              <input value="60 minutes" disabled/>
-            </div>
-          </div>
-
-          <div class="row two-col">
-            <div>
-              <label>Start Time</label>
-              <select id="startTime"></select>
-            </div>
-            <div>
-              <label>End Time</label>
-              <select id="endTime"></select>
-            </div>
-          </div>
-
-          <div class="row">
-            <label>Days of Week</label>
-            <div class="chips" id="daysOfWeek"></div>
-          </div>
-
-          <div class="row two-col">
-            <div>
-              <label>Season Start Date</label>
-              <input type="date" id="seasonStart"/>
-            </div>
-            <div>
-              <label>Minimum Games Per Team</label>
-              <input type="number" id="minGames" min="1" value="8"/>
-            </div>
-          </div>
-
-          <div class="divider"></div>
-
-          <div class="card-title">Global Exception Dates (blackouts)</div>
-          <div class="muted small">These dates are skipped across the league. Scheduling will extend into later weeks.</div>
-          <div class="row two-col">
-            <div>
-              <input type="date" id="exceptionDate"/>
-            </div>
-            <div>
-              <button class="btn secondary" id="btnAddException">Add Exception</button>
-            </div>
-          </div>
-          <div id="exceptionsList" class="list compact"></div>
-        </div>
-
-        <div class="card">
-          <div class="card-title">Generate Schedule</div>
-          <div class="muted small">
-            The scheduler fills available 60-minute slots (starting on <b>:00</b> or <b>:30</b>) across selected days,
-            skipping exception dates, until each division reaches the minimum games per team (best-effort).
-          </div>
-
-          <div class="row">
-            <button class="btn" id="btnGenerate">Generate Schedule</button>
-          </div>
-
-          <div id="genWarnings" class="status warn"></div>
-          <div id="genSummary" class="status"></div>
-
-          <div class="divider"></div>
-
-          <div class="card-title">Capacity Preview</div>
-          <div class="muted small">Rough weekly capacity for selected days, times, and courts.</div>
-          <div id="capacityPreview" class="kpi"></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SCHEDULE -->
-    <section class="panel" id="tab-schedule">
-      <div class="card">
-        <div class="card-title">Schedule</div>
-        <div class="toolbar">
-          <select id="scheduleFilter"></select>
-          <button class="btn secondary" id="btnExportCsv">Export Schedule CSV</button>
-          <button class="btn secondary" id="btnClearSchedule">Clear Schedule</button>
-        </div>
-        <div id="scheduleList" class="list"></div>
-      </div>
-    </section>
-
-    <!-- STANDINGS -->
-    <section class="panel" id="tab-standings">
-      <div class="card">
-        <div class="card-title">Standings</div>
-        <div class="muted small">Enter scores in the Schedule tab. Standings update automatically.</div>
-        <div id="standingsWrap" class="standings"></div>
-      </div>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <div class="muted small">Local MVP • Data stored in your browser (localStorage). Firebase port planned later.</div>
-  </footer>
-
-  <script src="script.js"></script>
+  </div>
+  <nav class="tabs" id="tabs"></nav>
+</header>
+<main class="container">
+  <section class="card" id="screen"></section>
+</main>
+<script src="app.js"></script>
 </body>
 </html>

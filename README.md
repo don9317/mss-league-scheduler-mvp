@@ -1,10 +1,13 @@
+# MSS League Scheduler MVP – v6
 
-MSS League Scheduler MVP – v3
+## Coach View
+Open:
+?view=coach
 
-✔ Boys & Girls divisions
-✔ Skill filter (Open / Rec) verified
-✔ Local demo (open index.html in Chrome)
+- Default: Standings
+- Click team → Team Detail (record + schedule)
+- Read-only
 
-If you only saw "Open" before:
-That division only had Open enabled.
-Now both skills are enabled by default.
+Examples:
+index.html?view=coach
+index.html?view=coach&team=t1
