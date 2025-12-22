@@ -1,13 +1,7 @@
 # MSS League Scheduler MVP – v6
 
+## Admin (default)
+/index.html
+
 ## Coach View
-Open:
-?view=coach
-
-- Default: Standings
-- Click team → Team Detail (record + schedule)
-- Read-only
-
-Examples:
-index.html?view=coach
-index.html?view=coach&team=t1
+/index.html?view=coach
